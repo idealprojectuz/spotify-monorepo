@@ -11,12 +11,12 @@
 body {
     color: var(--tg-theme-text-color);
     /* height: 500px; */
+    /* height: var(--tg-viewport-height); */
     background-color: var(--tg-theme-secondary-bg-color);
 
 }
 
-.container {
-    width: 95%;
+/* .container {
     margin-left: auto;
     margin-right: auto;
-}
+} */

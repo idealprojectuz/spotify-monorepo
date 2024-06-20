@@ -10,7 +10,11 @@ dotenv.config({
 });
 
 const token: any = process.env.TOKEN;
-const bot = new Bot(token); // <-- put your bot token between the ""
+const bot = new Bot(token, {
+  client: {
+    environment: "test",
+  },
+}); // <-- put your bot token between the ""
 
 bot.command("start", async (ctx) => {
   const file = new InputFile(

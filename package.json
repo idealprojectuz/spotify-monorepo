@@ -5,10 +5,12 @@
   "scripts": {
     "dev:ui": "npm --workspace apps/web run dev",
     "dev:build": "npm --workspace apps/web run build",
+    "dev:backend": "npm --workspace apps/backend run dev",
+    "backend:test": "npm --workspace apps/backend run test",
     "dev:bot": "npm --workspace apps/bot run dev",
     "prod:bot": "npm --workspace apps/bot run start",
     "dev:preview": "npm --workspace apps/web run preview",
-    "dev": "npm-run-all -p dev:ui dev:bot tunnel",
+    "dev": "npm-run-all -p dev:ui dev:bot  tunnel",
     "tunnel": "ngrok http 5173"
   },
   "author": "",
@@ -19,7 +21,8 @@
   },
   "workspaces": [
     "apps/web",
-    "apps/bot"
+    "apps/bot",
+    "apps/backend"
   ],
   "dependencies": {
     "@types/telegram-web-app": "^7.2.1"
