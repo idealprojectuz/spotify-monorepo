@@ -58,15 +58,32 @@ app.get("/listen", authMiddleware, async (req, res) => {
   try {
     const musicUrl = req.payload.url;
 
+    // Range so'rovini olish
+    const range = req.headers.range;
+    if (!range) {
+      return res.status(400).send("Range header is required");
+    }
+
+    // Musiqa faylini olish uchun axios so'rovi
     const response = await axios({
       url: musicUrl,
       method: "GET",
       responseType: "stream",
+      headers: {
+        Range: range,
+      },
     });
 
-    if (response.status >= 200 && response.status < 300) {
-      // Response'ni sozlash va musiqa faylini qaytarish
+    // Status kodni tekshirish
+    if (response.status === 206) {
+      // Content-Range va Content-Length boshliqlarini sozlash
+      res.setHeader("Content-Range", response.headers["content-range"]);
+      res.setHeader("Content-Length", response.headers["content-length"]);
+      res.setHeader("Accept-Ranges", "bytes");
       res.setHeader("Content-Type", response.headers["content-type"]);
+      res.status(206);
+
+      // Response'ni stream qilib qaytarish
       response.data.pipe(res);
     } else {
       res.status(response.status).send("Failed to fetch the music file");
