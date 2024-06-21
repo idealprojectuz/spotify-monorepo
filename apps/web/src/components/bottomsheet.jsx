@@ -81,7 +81,14 @@ export const Bottomsheet = ({ open, setIsOpen, track }) => {
         {audio && (
           <audio controls className="w-full">
             {audio.map((el) => {
-              return <source type={el.mimeType} src={el.url} />;
+              return (
+                <source
+                  type={el.mimeType}
+                  src={`${import.meta.env.VITE_PUBLIC_URL}/listen?hash=${
+                    el.hash
+                  }`}
+                />
+              );
             })}
             {/* <source type={audio?.mimeType} src={audio.url} /> */}
           </audio>
