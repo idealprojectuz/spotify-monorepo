@@ -12,7 +12,7 @@ export const getByOneMusic = async (videoId) => {
   //   lang: "en",
   //   format: "audioonly",
   // });
-  let info = await ytdlcore.getInfo("https://youtube.com/watch?v=" + videoId, {
+  let info = await ytdlcore.getInfo( "https://music.youtube.com/watch?v=" + videoId {
     lang: "en",
 
     format: "audioonly",
