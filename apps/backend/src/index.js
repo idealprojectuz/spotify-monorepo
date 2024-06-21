@@ -27,6 +27,7 @@ app.get("/song/:songId", async (req, res) => {
     const formats = await getByOneMusic(req.params.songId);
     return res.status(200).json(formats);
   } catch (error) {
+    console.log(error);
     return res.status(401).json({
       ok: false,
       message: error.message || "Something went wrong",
