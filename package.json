@@ -8,6 +8,7 @@
     "dev:backend": "npm --workspace apps/backend run dev",
     "backend:test": "npm --workspace apps/backend run test",
     "dev:bot": "npm --workspace apps/bot run dev",
+    "prod:backend": "npm --workspace apps/backend run start",
     "prod:bot": "npm --workspace apps/bot run start",
     "dev:preview": "npm --workspace apps/web run preview",
     "dev": "npm-run-all -p dev:ui dev:bot  tunnel",
