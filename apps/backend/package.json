@@ -8,6 +8,8 @@
     "start": "node src/test.js"
   },
   "dependencies": {
+    "@music/bot": "*",
+    "@music/web": "^1.0.0",
     "axios": "^1.7.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
