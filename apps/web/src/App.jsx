@@ -5,35 +5,50 @@ import { Track } from "./components/track";
 import { request } from "./config/config";
 import { Bottomsheet } from "./components/bottomsheet";
 import ContentLoader from "react-content-loader";
-const initProject = () => {
-  window?.Telegram?.WebApp?.ready();
-  Telegram?.WebApp?.expand();
-  // console.log(Telegram.WebApp.disableClosingConfirmation());
-  function setThemeClass() {
-    document.documentElement.className = Telegram.WebApp.colorScheme;
-    Telegram.WebApp.setHeaderColor(Telegram.WebApp.themeParams.bg_color);
-    Telegram.WebApp.disableClosingConfirmation();
 
-    // setThemeSettings(Telegram.WebApp.themeParams);
-  }
-
-  // console.log(Telegram.WebApp.backgroundColor);
-  Telegram.WebApp.onEvent("themeChanged", setThemeClass);
-  setThemeClass();
-};
 function App() {
+  const [user, setUser] = React.useState(null);
+  const initProject = () => {
+    window?.Telegram?.WebApp?.ready();
+    // window?.Telegram?.WebApp?.requestWriteAccess((status) =>
+    //   console.log(status)
+    // );
+    // console.log(Telegram.WebView.receiveEvent());
+    Telegram?.WebApp?.expand();
+    setUser(Telegram.WebApp.initDataUnsafe);
+    // console.log(Telegram.WebApp.disableClosingConfirmation());
+    function setThemeClass() {
+      document.documentElement.className = Telegram.WebApp.colorScheme;
+      Telegram.WebApp.setHeaderColor(Telegram.WebApp.themeParams.bg_color);
+      Telegram.WebApp.disableClosingConfirmation();
+
+      // setThemeSettings(Telegram.WebApp.themeParams);
+    }
+
+    // console.log(Telegram.WebApp.backgroundColor);
+    Telegram.WebApp.onEvent("themeChanged", setThemeClass);
+    setThemeClass();
+  };
   const [tracks, setTracks] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   React.useEffect(() => {
     initProject();
     getMusic();
   }, []);
+  const data = { text: "Hello world" };
+
+  // Telegram.WebApp.MainButton.setText("Yuborish").show();
+
+  // Telegram.WebApp.onEvent("mainButtonClicked", async () => {
+  //   await window.Telegram.WebApp.sendData(JSON.stringify(data));
+  //   // Telegram.WebApp.close();
+  // });
   const getMusic = async (search = null) => {
     try {
       setLoading(true);
       const musiclist = await request.get("/song", {
         params: {
-          q: search ? search : "eng sara musiqalar " + new Date().getFullYear(),
+          q: search ? search : "konsta " + new Date().getFullYear(),
         },
       });
 
@@ -166,7 +181,7 @@ function App() {
               </>
             ) : tracks?.length ? (
               tracks?.map((track) => {
-                return <Track key={track.youtubeId} track={track} />;
+                return <Track key={track?.youtubeId} track={track} />;
               })
             ) : (
               <div className="flex justify-center items-center">

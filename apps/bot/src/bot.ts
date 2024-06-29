@@ -1,29 +1,41 @@
+import { Telegraf } from "telegraf";
 import dotenv from "dotenv";
-import { Bot } from "grammy";
-import { InlineKeyboardButton, InputFile } from "grammy/types";
 import { join } from "path";
-import { musicPhoto, tunnel_url } from "./constants";
 import fs from "fs";
-// console.log();
+import { musicPhoto, tunnel_url } from "./constants";
+
 dotenv.config({
   path: join(process.cwd(), "..", "..") + "/.env",
 });
 
-const token: any = process.env.TOKEN;
-const bot = new Bot(token, {
-  client: {
-    environment: "test",
+const token: string = process.env.TOKEN || "";
+const bot = new Telegraf(token, {
+  telegram: {
+    testEnv: false,
   },
-}); // <-- put your bot token between the ""
+});
 
-bot.command("start", async (ctx) => {
-  const file = new InputFile(
-    fs.readFileSync(join(__dirname, "..", "media", "logo.png")),
-    "logo.png"
-  );
+// bot.on("web_app_data", (ctx) => {
+//   console.log(ctx);
+// });
+// bot.use((ctx, next) => {
+//   console.log(ctx);
+// });
+// bot.use(async (ctx, next) => {
+//   console.log(ctx);
+// });
+
+bot.on("web_app_data", (ctx) => {
+  console.log(ctx);
+});
+
+bot.start((ctx) => {
+  const file = {
+    source: fs.readFileSync(join(__dirname, "..", "media", "logo.png")),
+  };
   ctx.replyWithPhoto(file, {
     caption:
-      "Hello 👋 welcome to our bot you can listen to music through our bot To search for music go to Mini Apps through the menu below",
+      "Hello 👋 welcome to our bot you can listen to music through our bot. To search for music, go to Mini Apps through the menu below",
     reply_markup: {
       inline_keyboard: [
         [
@@ -39,7 +51,7 @@ bot.command("start", async (ctx) => {
   });
 });
 
-bot.command("help", (ctx) => {
+bot.help((ctx) => {
   ctx.replyWithAudio(
     "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/1c/55/15/1c551554-35ac-1fc5-3924-9b6ede6dc95a/mzaf_15647324962729712637.plus.aac.ep.m4a",
     {
@@ -48,34 +60,11 @@ bot.command("help", (ctx) => {
   );
 });
 
-bot.on("message", (ctx) => {
-  const file = new InputFile(
-    fs.readFileSync(join(__dirname, "..", "media", "logo.png")),
-    "logo.png"
-  );
-  ctx.replyWithPhoto(file, {
-    caption:
-      "Hello 👋 welcome to our bot you can listen to music through our bot To search for music go to Mini Apps through the menu below",
-    reply_markup: {
-      inline_keyboard: [
-        [
-          {
-            text: "Mini Apps",
-            web_app: {
-              url: tunnel_url,
-            },
-          },
-        ],
-      ],
-    },
-  });
+// Botni ishga tushirish
+bot.launch(() => {
+  console.log("Bot ishga tushdi");
 });
-// Now that you specified how to handle messages, you can start your bot.
-// This will connect to the Telegram servers and wait for messages.
 
-// Start the bot.
-bot.start({
-  onStart(botInfo) {
-    console.log("Bot running username " + botInfo.username);
-  },
-});
+// Graceful stop
+process.once("SIGINT", () => bot.stop("SIGINT"));
+process.once("SIGTERM", () => bot.stop("SIGTERM"));

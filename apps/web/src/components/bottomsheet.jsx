@@ -11,6 +11,7 @@ export const Bottomsheet = ({ open, setIsOpen, track }) => {
       const response = await request("/song/" + track.youtubeId);
       if (response.status == 200) {
         setAudio(response.data);
+        return;
       }
     } catch (error) {
       //   Telegram.WebApp.HapticFeedback.notificationOccurred("error");
@@ -18,20 +19,39 @@ export const Bottomsheet = ({ open, setIsOpen, track }) => {
     }
   };
 
+  Telegram.WebApp.onEvent("mainButtonClicked", () => {
+    // console.log("clicked");
+    // Telegram.WebApp.sendData("hello world");
+
+    Telegram.WebApp.sendData("hello world");
+  });
   React.useEffect(() => {
     if (open) {
+      // console.log(window.Telegram.WebApp.BackButton);
+      // Telegram.WebApp.MainButton.enable();
+
       //   if (audio != null) {
       getAudio();
       //   }
+
       setTimeout(() => {
         Telegram.WebApp.setHeaderColor(
           Telegram.WebApp.themeParams.secondary_bg_color
         );
-      }, 500);
+        Telegram.WebApp.MainButton.show();
+        Telegram.WebApp.MainButton.setParams({
+          is_active: true,
+          color: "#1ED760",
+
+          text: "Save Telegram",
+        });
+        // Telegram.WebApp.MainButton.onClick(saveMusic);
+      }, 600);
     } else {
-      Telegram.WebApp.setHeaderColor(Telegram.WebApp.themeParams.bg_color);
+      // Telegram.WebApp.MainButton.hide();
+      // Telegram.WebApp.setHeaderColor(Telegram.WebApp.themeParams.bg_color);
     }
-  }, [open, track]);
+  }, [open, track?.youtubeId]);
   return (
     <div
       style={{
@@ -63,36 +83,37 @@ export const Bottomsheet = ({ open, setIsOpen, track }) => {
           />
         </svg>
       </div>
-      <div className="h-full pl-2 pr-2 flex items-center flex-col relative">
-        <div className="h-[350px]  rounded-[12px]  z-[99] mt-[70px] w-full overflow-hidden   ">
+      <div className="h-full flex items-center flex-col relative">
+        <div className="h-[350px]    z-[99] mt-[0px] w-full overflow-hidden   ">
           <img src={newthumb} className="object-cover h-full w-full" />
         </div>
         <div className="text-left block  w-full">
           <h2 className="text-left text-[24px] font-[500]">{track.title}</h2>
           <p className="text-[var(--tg-theme-subtitle-text-color)]">
             {track?.artists?.map((el) => (
-              <span key={el.id}>{el.name} </span>
+              <React.Fragment key={el?.id}>
+                <span>{el.name} </span>
+              </React.Fragment>
             ))}
             | {track.duration.label}
           </p>
         </div>
         <div className={`  absolute left-0 bottom-0 w-full h-full`}></div>
 
-        {audio && (
-          <audio controls className="w-full">
-            {audio.map((el) => {
-              return (
-                <source
-                  type={el.mimeType}
-                  src={`${import.meta.env.VITE_PUBLIC_URL}/listen?hash=${
-                    el.hash
-                  }`}
-                />
-              );
-            })}
-            {/* <source type={audio?.mimeType} src={audio.url} /> */}
-          </audio>
-        )}
+        <audio controls className="w-full">
+          {audio?.map((el) => {
+            return (
+              <source
+                key={el.hash}
+                type={el.mimeType}
+                src={`${import.meta.env.VITE_PUBLIC_URL}/listen?hash=${
+                  el.hash
+                }`}
+              />
+            );
+          })}
+          {/* <source type={audio?.mimeType} src={audio.url} /> */}
+        </audio>
       </div>
     </div>
   );

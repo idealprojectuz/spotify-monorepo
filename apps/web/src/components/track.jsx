@@ -25,10 +25,13 @@ export const Track = ({ track }) => {
           <h2 className="title text-left break-words">{track.title}</h2>
 
           <p className="artist text-[12px] text-[var(--tg-theme-subtitle-text-color)]  text-left">
-            {track?.artists?.map((el) => (
-              <span key={el.id}>{el.name} </span>
-            ))}
-            | {track.duration.label}
+            {/* {track?.artists?.map((el) => (
+              <React.Fragment key={el.id}>
+                <span>{el.name} </span>
+              </React.Fragment>
+            ))} */}
+            {/* | */}
+            {track.duration.label}
           </p>
           {/* <p className="text-left text-[12px]">{}</p> */}
         </div>
