@@ -11,7 +11,7 @@ export const Bottomsheet = ({ open, setIsOpen, track }) => {
       const response = await request("/song/" + track.youtubeId);
       if (response.status == 200) {
         setAudio(response.data);
-        return;
+        return response.data;
       }
     } catch (error) {
       //   Telegram.WebApp.HapticFeedback.notificationOccurred("error");
@@ -19,22 +19,31 @@ export const Bottomsheet = ({ open, setIsOpen, track }) => {
     }
   };
 
-  Telegram.WebApp.onEvent("mainButtonClicked", () => {
-    // console.log("clicked");
+  Telegram.WebApp.onEvent("mainButtonClicked", async () => {
+    // console.log(audio);
     // Telegram.WebApp.sendData("hello world");
-
-    Telegram.WebApp.sendData("hello world");
+    const data = await getAudio();
+    // console.log(data);
+    // alert(`${import.meta.env.VITE_PUBLIC_URL}/listen?hash=${data[1].hash}`);
+    const sending = {
+      url: `${import.meta.env.VITE_PUBLIC_URL}/listen?url=${encodeURIComponent(
+        data[0].url
+      )}`,
+      title: track.title,
+      artists: track.artists,
+      // type:
+    };
+    // console.log(sending);
+    Telegram.WebApp.sendData(JSON.stringify(sending));
   });
   React.useEffect(() => {
-    if (open) {
-      // console.log(window.Telegram.WebApp.BackButton);
-      // Telegram.WebApp.MainButton.enable();
+    const handleOpen = async () => {
+      if (open) {
+        // await getAudio funksiyasini chaqirish
+        getAudio();
 
-      //   if (audio != null) {
-      getAudio();
-      //   }
+        // audio holati nullga teng emasligini tekshirish
 
-      setTimeout(() => {
         Telegram.WebApp.setHeaderColor(
           Telegram.WebApp.themeParams.secondary_bg_color
         );
@@ -42,15 +51,15 @@ export const Bottomsheet = ({ open, setIsOpen, track }) => {
         Telegram.WebApp.MainButton.setParams({
           is_active: true,
           color: "#1ED760",
-
           text: "Save Telegram",
         });
-        // Telegram.WebApp.MainButton.onClick(saveMusic);
-      }, 600);
-    } else {
-      // Telegram.WebApp.MainButton.hide();
-      // Telegram.WebApp.setHeaderColor(Telegram.WebApp.themeParams.bg_color);
-    }
+      } else {
+        // Telegram.WebApp.MainButton.hide();
+        // Telegram.WebApp.setHeaderColor(Telegram.WebApp.themeParams.bg_color);
+      }
+    };
+
+    handleOpen();
   }, [open, track?.youtubeId]);
   return (
     <div
@@ -104,11 +113,11 @@ export const Bottomsheet = ({ open, setIsOpen, track }) => {
           {audio?.map((el) => {
             return (
               <source
-                key={el.hash}
+                key={el.url}
                 type={el.mimeType}
-                src={`${import.meta.env.VITE_PUBLIC_URL}/listen?hash=${
-                  el.hash
-                }`}
+                src={`${
+                  import.meta.env.VITE_PUBLIC_URL
+                }/listen?url=${encodeURIComponent(el.url)}`}
               />
             );
           })}
