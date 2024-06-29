@@ -23,7 +23,7 @@ export const Bottomsheet = ({ open, setIsOpen, track }) => {
     // console.log(audio);
     // Telegram.WebApp.sendData("hello world");
     const data = await getAudio();
-    // console.log(data);
+    console.log(data);
     // alert(`${import.meta.env.VITE_PUBLIC_URL}/listen?hash=${data[1].hash}`);
     const sending = {
       url: `${import.meta.env.VITE_PUBLIC_URL}/listen?url=${encodeURIComponent(

@@ -43,7 +43,7 @@ bot.on("web_app_data", async (ctx) => {
     ctx.sendChatAction("upload_document");
     await ctx.replyWithAudio({
       url: audio.url,
-      filename: audio.title + ".weba",
+      filename: audio.title,
     });
     ctx.deleteMessage(loading.message_id);
   } catch (error: any) {
